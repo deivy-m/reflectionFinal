@@ -1,9 +1,7 @@
 import java.util.List;
 
-public abstract class Figura {
-
-    public Figura(){}
-    public abstract Long perimetro();
-    public abstract Long area();
-    public abstract void setDefaultParams();
+public interface Figura {
+    double area();
+    double perimetro();
+    default void setDefaultParams() {}
 }

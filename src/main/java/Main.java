@@ -1,56 +1,29 @@
-import groovy.lang.GroovyClassLoader;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        // Lista de figuras que queremos intentar cargar
-        List<String> nombresFiguras = new ArrayList<>();
-        nombresFiguras.add("Cuadrado");   // Nativa
-        nombresFiguras.add("Pentagono");  // Groovy
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("SISTEMA DE FIGURAS DINÁMICAS ACTIVO");
+        System.out.println("Escribe el nombre de la figura (o 'salir'):");
 
-        String rutaScripts = "scripts/";
-        GroovyClassLoader gcl = new GroovyClassLoader();
-
-        for (String nombre : nombresFiguras) {
+        while (true) {
             try {
-                Class<?> clazz;
-                try {
+                System.out.print("\nFigura > ");
+                String nombre = scanner.next();
+                if (nombre.equalsIgnoreCase("salir")) break;
 
-                    clazz = Class.forName(nombre);
-                } catch (ClassNotFoundException e) {
+                System.out.print("Valor del lado/radio > ");
+                double valor = scanner.nextDouble();
 
-                    File scriptFile = new File(rutaScripts + nombre + ".groovy");
-                    if (scriptFile.exists()) {
-                        clazz = gcl.parseClass(scriptFile);
-                    } else {
-                        System.out.println("No se encontró la figura: " + nombre);
-                        continue;
-                    }
-                }
+                Figura f = FiguraFactory.crear(nombre, Map.of("lado", valor, "radio", valor));
 
-                // Instanciación dinámica (usando constructor vacío)
-                Figura fg = (Figura) clazz.getDeclaredConstructor().newInstance();
-
-
-                try {
-                    Field field = clazz.getDeclaredField("lado");
-                    field.setAccessible(true);
-                    field.set(fg, 10);
-                } catch (NoSuchFieldException e) {
-                    fg.setDefaultParams();
-                }
-
-                System.out.println("--- Figura: " + clazz.getSimpleName() + " ---");
-                System.out.println("Área: " + fg.area());
-                System.out.println("Perímetro: " + fg.perimetro());
-                System.out.println("----------------------------");
+                System.out.println("Resultado: Área = " + f.area() + " | Perímetro = " + f.perimetro());
 
             } catch (Exception e) {
-                System.err.println("Error procesando " + nombre + ": " + e.getMessage());
+                System.err.println("Error: " + e.getMessage());
             }
         }
+        scanner.close();
     }
 }

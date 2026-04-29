@@ -1,18 +1,11 @@
-public class Cuadrado extends Figura {
-    private int lado = 0;
+public class Cuadrado implements Figura {
+    private double lado;
+
+    public Cuadrado() {}
 
     @Override
-    public Long perimetro() {
-        return (long) (lado * 4);
-    }
+    public double area() { return lado * lado; }
 
     @Override
-    public Long area() {
-        return (long) (lado * lado);
-    }
-
-    @Override
-    public void setDefaultParams() {
-        if (this.lado == 0) this.lado = 4;
-    }
+    public double perimetro() { return lado * 4; }
 }
